@@ -53,12 +53,7 @@
       function addDataFile() {
 
          // clone from existing new formset
-         var formset = $(".datafile_formset_new").last();
-
-         // clone from original formset
-         if (formset.length == 0) {
-            formset = $(".datafile_formset");
-         }
+         var formset = $(".datafile_formset").last();
 
          // find what set number we're on
          var setNo = formset.html().match(/set-(\d)+/)[1];
@@ -69,16 +64,17 @@
          tmpFormset.html(formset.html().replace(/set-(\d)+/g, "set-" + (setNo + 1)));
 
          // create new formset
-         var newFormset = $("<div class='datafile_formset_new'></div>");
+         var newFormset = $("<div class='datafile_formset'></div>");
          newFormset.append(tmpFormset.find("p"));
          // empty variable selectbox
          newFormset.find("select[multiple]").html("");
-         newFormset.append("<button class='red button remove_button'>Remove</button>");
+         newFormset.append("<button class='red button remove_button'>"
+               + "Remove</button>");
 
          // increment tally of formsets
          incrementFormsetCount(1);
 
-         $(".datafile_formset").append(newFormset);
+         formset.after(newFormset);
       };
 
       $form.on("change", "select[id$=datafile]", function(e) {

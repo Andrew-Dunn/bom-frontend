@@ -7,25 +7,28 @@
    {{ formset.media }}
    {% csrf_token %}
    {{ form.as_p }}
-   <div class="datafile_formset">
-      {{ formset.management_form }}
-      <div class="datafile_formset_new clearfix">
-         {% for form in formset %}
-            {% for field in form.visible_fields %}
+   {{ formset.management_form }}
 
-               {% if field.label != "Delete" %}
-                  <p>{{ field.errors }}</p>
-                  <p>{{ field.label_tag }}{{ field }}</p>
-               {% endif %}
+   {% for form in formset %}
+      <div class="datafile_formset">
 
-            {% endfor %}
-         {% endfor %}
+      {% for field in form.visible_fields %}
+
+
+         {% if field.label != "Delete" %}
+            <p>{{ field.errors }}</p>
+            <p>{{ field.label_tag }}{{ field }}</p>
+         {% endif %}
+
+      {% endfor %}
+
+      {% if forloop.counter > 1 %}
+         <button class="red button remove_button">Remove</button>
+      {% endif %}
       </div>
-   </div>
-   <div class="form_buttons">
-      <button id="add_datafile" class="button">Add Datafile</button>
-      <input type="submit" value="Submit" class="button" />
-   </div>
+   {% endfor %}
+   <button id="add_datafile" class="button">Add Datafile</button>
+   <input type="submit" value="Submit" class="button" />
 </form>
 
 {% endblock %}

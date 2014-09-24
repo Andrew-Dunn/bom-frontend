@@ -69,13 +69,18 @@ class DataFile(models.Model):
    def __unicode__(self):
       return self.file_url
 
+class Calculation(models.Model):
+   """ Represents calculation to run on Computation, eg 'regress', 
+   'correlate'. """
+   name = models.CharField(max_length=100,unique=True)
+   min_datafiles = models.IntegerField()
+   max_datafiles = models.IntegerField()
+
+   def __unicode__(self):
+      return self.name.title()
+
 class Computation(models.Model):
    """The operation performed on data files, such as correlate or regress."""
-
-   CALC_CHOICES = (
-         ('correlate', 'Correlate'),
-         ('regress', 'Regress'),
-   )
 
    STATUS_CHOICES = (
          ('scheduled', 'Scheduled'),
@@ -90,29 +95,24 @@ class Computation(models.Model):
          blank=True)
    status = models.CharField(max_length=100,choices=STATUS_CHOICES,
          default='scheduled')
-   calculation = models.CharField(max_length=100,choices=CALC_CHOICES,
-         default='correlate')
-
-   def result_wms(self):
-      #Get the URL of the result from Zoo in WMS format
-      return ZooAdapter.get_result(self.get_computationdata().all(), 
-            self.calculation, 'wms')
-
-   def result_nc(self):
-      #Get the URL of the result from Zoo in NC format
-      return ZooAdapter.get_result(self.get_computationdata().all(), 
-            self.calculation, 'ncfile')
-
-   def result_opendap(self):
-      #Get the URL of the result from Zoo in Opendap format
-      return ZooAdapter.get_result(self.get_computationdata().all(), 
-            self.calculation, 'opendap')
+   calculation = models.ForeignKey(Calculation)
+   result_wms = models.CharField(max_length=100,blank=True)
+   result_nc = models.CharField(max_length=100,blank=True)
+   result_opendap = models.CharField(max_length=100,blank=True)
 
    def clean(self):
       self.created_date = datetime.now()
 
    def get_computationdata(self):
       return ComputationData.objects.filter(computation=self).order_by('id')
+
+   def schedule_in_zoo(self):
+      result_links = ZooAdapter.schedule_computation(self)
+
+      self.result_wms = result_links['wms']
+      self.result_nc = result_links['nc']
+      self.result_opendap = result_links['opendap']
+      self.save()
 
 class ComputationData(models.Model):
    """Link between Computation and DataFiles. Specific variables for data file

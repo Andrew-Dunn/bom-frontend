@@ -1,0 +1,12 @@
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (0,'scheduled','');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (1,'running','');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (2,'success','');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (3,'failed','URL error');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (4,'failed','download error');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (5,'failed','invalid file type');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (6,'failed','duplicate ID');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (7,'failed','computation error');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (8,'failed','computation error - invalid variables/dimensions');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (9,'failed','computation error - range error');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (10,'failed','computation error - problem with calculation');
+INSERT INTO zooadapter_zoocomputationstatus(code, status, details) VALUES (11,'failed','computation error - permissions error');

@@ -44,6 +44,11 @@ class ZooAdapterConfig(SingletonModel):
    def __unicode__(self):
       return u"Zoo Adapter Configuration"
 
+class ZooComputationStatus(models.Model):
+   code = models.IntegerField(primary_key=True)
+   status = models.CharField(max_length=100)
+   details = models.CharField(max_length=1000)
+
 class ZooAdapter():
 
    config = ZooAdapterConfig.objects.get()
@@ -113,61 +118,62 @@ class ZooAdapter():
       return out
 
    @staticmethod
-   def get_descriptor_file(computationdata_list, calculation):
-      """Get the file that describes the result of our computation.
+   def schedule_computation(computation):
+      """ Submit a Computation to the Zoo server and schedule it to run.
 
-      This page loads our result files, and returns a list of them (as well as
-      other information).
-
-      Note: at least two datafiles are required
-
+      Returns a dictionary of result links (wms, nc, opendap)
+   
       Keyword arguments:
-      datafiles -- array of datafile objects to perform calculation on
-      calculation -- calculation we want to perform, eg 'correlate', 'regress'
+      computation -- the computation to schedule
       """
 
-      #must have at least two data files
-      #TODO: exception?
-      if len(computationdata_list) < 2:
-         return;
+      result_links = {}
 
-      descriptor_file = (ZooAdapter.config.get_zoo_server_address() +
-            '/cgi-bin/zoo_loader.cgi?request=Execute&service=WPS'
-		      '&version=1.0.0.0&identifier='
-            'Operation&DataInputs=selection=' + calculation + ';urls=')
+      schedule_link = ZooAdapter._get_schedule_link(computation)
 
-      #append all data files
-      for computationdata in computationdata_list:
-         descriptor_file += computationdata.datafile.file_url + ','
+      # contains info about our scheduled_computation
+      description_file = urllib.urlopen(schedule_link)
 
-      #Remove trailing comma
-      descriptor_file = descriptor_file[:-1]
+      result_links['wms'] = ZooAdapter._get_result_link(description_file, 'wms')
+      result_links['nc'] = ZooAdapter._get_result_link(description_file, 'nc')
+      result_links['opendap'] = ZooAdapter._get_result_link(description_file, 
+            'opendap')
 
-      return descriptor_file
+      return result_links
 
    @staticmethod
-   def get_result(computationdata_list, calculation, format):
-      """Get the url of the result file for calculation performed on datafiles.
+   def _get_schedule_link(computation):
+      """ Constructs & returns the link to use to schedule a Computation 
+      in Zoo. """
+
+      descriptor_file = (ZooAdapter.config.get_zoo_server_address() + 
+            '/cgi-bin/zoo_loader.cgi?request=Execute&service=WPS'
+            '&version=1.0.0.0&identifier=jobScheduler&DataInputs='
+            'selection=' + computation.calculation.name + ';'
+            'urls=')
+            
+      #append all data files
+      for data in computation.get_computationdata():
+         datafiles_str += data.datafile.file_url + ','
+
+      #Remove trailing comma
+      descriptor_file += datafiles_str[:-1]
+
+      #add computation id
+      descriptor_file += ';jobid=' + computation.id
+
+   @staticmethod
+   def _get_result_link(filehandle, format):
+      """ Search for a result link for a particular format (wms, nc, opendap)
+      within the xml file returned when scheduling a computation.
 
       Keyword arguments:
-      datafiles -- array of datafile objects to perform calculation on
-      calculation -- calculation we want to perform, eg 'correlate', 'regress'
-      format -- format of result file. either 'wms', 'opendap', or 'ncfile'
+      filehandle -- the description file for a scheduled computation
+      format -- the foramt to search for (wms, nc or opendap)
       """
 
-      #file containing list of result links
-      descriptor_file = ZooAdapter.get_descriptor_file(computationdata_list,
-            calculation)
-
-      if not descriptor_file:
-         return
-
-      result_url = ''
-      filehandle = urllib.urlopen(descriptor_file)
-
-      #find our result link
-
       regex = '\[' + format + '\](.*?)\[/' + format + '\]'
+      result_url = ''
 
       for line in filehandle.readlines():
          match = re.search(regex, line)
@@ -175,9 +181,9 @@ class ZooAdapter():
             result_url = match.group(1)
             break
 
-      # decode html entities
-      html_parser = HTMLParser.HTMLParser()
-      result_url = html_parser.unescape(result_url)
+      if result_url:
+         # decode html entities
+         html_parser = HTMLParser.HTMLParser()
+         result_url = html_parser.unescape(result_url)
 
-      filehandle.close()
       return result_url
