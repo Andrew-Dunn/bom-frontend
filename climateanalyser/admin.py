@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.forms import ModelForm
 from climateanalyser.models import *
+from django.http import HttpResponse
+from django.conf.urls import patterns
 from forms import *
 from solo.admin import SingletonModelAdmin
 from climateanalyser.models import ClimateAnalyserConfig
@@ -8,6 +10,7 @@ from climateanalyser.models import ClimateAnalyserConfig
 class ComputationDataInline(admin.StackedInline):
    model = ComputationData
    form = ComputationDataForm
+   extra = 1
 
    class Media:
       js = ('http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js',
@@ -15,8 +18,12 @@ class ComputationDataInline(admin.StackedInline):
             'climateanalyser/js/computationdataform.js',)
 
 class AdminComputationForm(ComputationForm):
+
+   # show it (it gets hidden in ComputationForm class)
+   created_by = forms.ModelChoiceField(queryset=User.objects.all())
+
    class Meta:
-      fields = ['id', 'created_by', 'created_date', 'completed_date']
+      fields = ['id','calculation', 'created_by', 'created_date', 'completed_date']
 
 class ComputationAdmin(admin.ModelAdmin):
    inlines = [ComputationDataInline]

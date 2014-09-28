@@ -1,7 +1,8 @@
 import json,urllib,rsa,base64
+from datetime import datetime
 from django.http import HttpResponse
 from models import DataFile,Computation
-from zooadapter.models import ZooAdapter
+from zooadapter.models import ZooAdapter,ZooComputationStatus
 
 def load_datafile_variables(request):
 
@@ -25,30 +26,38 @@ def update_computation_status(request):
    private_key = ZooAdapter.config.get_private_key()
 
    response = 'failure' # whether or not we failed to update status
-   encrypted_status = request.GET.get('status')
+   encrypted_status_id = request.GET.get('status')
    encrypted_comp_id = request.GET.get('id')
 
    # no input
-   if not encrypted_status or not encrypted_comp_id:
+   if not encrypted_status_id or not encrypted_comp_id:
       return HttpResponse(response)
 
    try:
       # prepare strings for decryption 
-      encrypted_status = urllib.unquote(base64.b64decode(encrypted_status))
+      encrypted_status_id = urllib.unquote(base64.b64decode(encrypted_status_id))
       encrypted_comp_id = urllib.unquote(base64.b64decode(encrypted_comp_id))
 
       # decrypt!
-      status = rsa.decrypt(encrypted_status, private_key)
+      status_id = rsa.decrypt(encrypted_status_id, private_key)
       computation_id = rsa.decrypt(encrypted_comp_id, private_key)
 
-      computation = Computation.objects.get(id=request.POST.get('id'))
+      status = ZooComputationStatus.objects.get(code=status_id)
+      computation = Computation.objects.get(id=computation_id)
 
    except Exception: 
       return HttpResponse(response)
 
-   if computation:
+   if computation and status:
       computation.status = status
+
+      # if job is completed, update its completed_date
+      if status.status is 'success':
+         computation.completed_date = datetime.now()
+
       computation.save()
+
+      # we successfully updated the computation's status
       response = 'success'
 
    return HttpResponse(response)

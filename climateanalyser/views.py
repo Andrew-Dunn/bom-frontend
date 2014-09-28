@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.http import StreamingHttpResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.forms.util import ErrorList
 
 def index(request):
    """Default app page. It's just blank. """
@@ -61,8 +62,10 @@ def create_computation(request, computation_pk=None):
       formset = ComputationFormSet(request.POST,instance=computation)
 
       if form.is_valid() and formset.is_valid():
+
          form.save()
          formset.save()
+         computation.schedule_in_zoo()
          # redirect on success
          messages.success(request, 'Computation successfully created!')
          return HttpResponseRedirect('/computations')

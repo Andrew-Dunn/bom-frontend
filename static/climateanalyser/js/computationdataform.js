@@ -61,12 +61,14 @@
 
          // clone formset with new set numbers
          var tmpFormset = $('<div></div>');
-         tmpFormset.html(formset.html().replace(/set-(\d)+/g, "set-" + (setNo + 1)));
+         tmpFormset.html(formset.html().replace(/set-(\d)+/g, "set-" 
+                  + (setNo + 1)));
 
          // create new formset
          var newFormset = $("<div class='datafile_formset'></div>");
          newFormset.append(tmpFormset.find("p"));
          // empty variable selectbox
+         newFormset.find("select:not([multiple])").val(0);
          newFormset.find("select[multiple]").html("");
          newFormset.append("<button class='red button remove_button'>"
                + "Remove</button>");

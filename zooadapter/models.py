@@ -127,20 +127,43 @@ class ZooAdapter():
       computation -- the computation to schedule
       """
 
+      return_bundle = {}
       result_links = {}
 
       schedule_link = ZooAdapter._get_schedule_link(computation)
 
       # contains info about our scheduled_computation
-      description_file = urllib.urlopen(schedule_link)
+      filehandle = urllib.urlopen(schedule_link)
+      text = filehandle.read()
 
-      result_links['wms'] = ZooAdapter._get_result_link(description_file, 'wms')
-      result_links['nc'] = ZooAdapter._get_result_link(description_file, 'nc')
-      result_links['opendap'] = ZooAdapter._get_result_link(description_file, 
-            'opendap')
+      result_links['wms'] = ZooAdapter._get_result_link(text, 'wms')
+      result_links['nc'] = ZooAdapter._get_result_link(text, 'ncfile')
+      result_links['opendap'] = ZooAdapter._get_result_link(text, 'opendap')
 
-      return result_links
+      return_bundle['status'] = ZooAdapter._get_result_status(text)
+      return_bundle['result_links'] = result_links
 
+      return return_bundle
+
+   @staticmethod
+   def _get_result_status(text):
+      """Get the status of the computation from the result file.
+         
+      Keyword arguments:
+      filehandle -- the result file"""
+
+      regex = ('<wps:Output>.*' 
+            '<ows:Identifier>Status</ows:Identifier>.*' 
+            '<wps:LiteralData.*?>(\d*)</wps:LiteralData>'
+            '.*</wps:Output>')
+
+      match = re.search(regex, text, re.DOTALL)
+
+      if match:
+         return ZooComputationStatus.objects.filter(code=match.group(1))[0]
+
+      return None
+      
    @staticmethod
    def _get_schedule_link(computation):
       """ Constructs & returns the link to use to schedule a Computation 
@@ -151,19 +174,26 @@ class ZooAdapter():
             '&version=1.0.0.0&identifier=jobScheduler&DataInputs='
             'selection=' + computation.calculation.name + ';'
             'urls=')
+
+      datafiles_str = ''
             
       #append all data files
       for data in computation.get_computationdata():
-         datafiles_str += data.datafile.file_url + ','
+         datafiles_str += data.datafile.file_url + '?'
+         datafiles_str += ','.join(data.variables) + ','
 
       #Remove trailing comma
       descriptor_file += datafiles_str[:-1]
 
       #add computation id
-      descriptor_file += ';jobid=' + computation.id
+      descriptor_file += ';jobid=' + str(computation.id)
+
+      print descriptor_file
+
+      return descriptor_file
 
    @staticmethod
-   def _get_result_link(filehandle, format):
+   def _get_result_link(text, format):
       """ Search for a result link for a particular format (wms, nc, opendap)
       within the xml file returned when scheduling a computation.
 
@@ -175,13 +205,10 @@ class ZooAdapter():
       regex = '\[' + format + '\](.*?)\[/' + format + '\]'
       result_url = ''
 
-      for line in filehandle.readlines():
-         match = re.search(regex, line)
-         if match:
-            result_url = match.group(1)
-            break
+      match = re.search(regex, text)
 
-      if result_url:
+      if match:
+         result_url = match.group(1)
          # decode html entities
          html_parser = HTMLParser.HTMLParser()
          result_url = html_parser.unescape(result_url)
