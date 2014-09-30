@@ -5,7 +5,7 @@
 <script type="text/javascript">
 
    var resultPath = '{{ computation.result_wms | safe}}';
-   var calculation = '{{ computation.calculation }}';
+   var calculation = '{{ computation.calculation.name }}';
    var tilemillServerAddress = '{{ tilemill_server_address }}';
 
 </script>

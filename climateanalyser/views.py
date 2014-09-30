@@ -11,6 +11,7 @@ from django.http import StreamingHttpResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.forms.util import ErrorList
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
    """Default app page. It's just blank. """
@@ -96,12 +97,28 @@ def computations(request):
    #Filter for current user
    if request.GET.get('show_mine'):
       user = request.user
-      template_params['computations'] = Computation.objects.filter(
-            created_by=user)
+      computation_list = Computation.objects.filter(created_by=user)
       template_params['show_mine'] = True;
    else:
-      template_params['computations'] = Computation.objects.filter()
+      computation_list = Computation.objects.filter()
+      computation_list = Computation.objects.all()
       template_params['show_mine'] = False;
+
+
+   computation_list.order_by('id')
+   paginator = Paginator(computation_list, 2)
+
+   page = request.GET.get('page')
+
+   try:
+      computations = paginator.page(page)
+   except PageNotAnInteger:
+      computations = paginator.page(1)
+   except EmptyPage:
+      computations = paginator.page(pagination.num_pages)
+
+   template_params['computations'] = computations
+   template_params['page_range'] = range(paginator.num_pages)
 
    return render(request, 'computations.html', template_params)
 

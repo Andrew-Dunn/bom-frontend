@@ -4,13 +4,16 @@
 
 <h1>Computations</h1>
 
+{% load staticfiles %}
+<script src="{% static "climateanalyser/js/pagination.js" %}"></script>
+
 <div class="controls">
 {% if user.username %}
    <a href="/create_computation" class="button create_computation">New Computation</a/>
-   <a href="/computations" class="button all_computations 
+   <a href="#" onclick="showMine(false)" class="button all_computations 
       {% if show_mine == False %} disabled {% endif %}">All Computations</a>
 
-   <a href="/computations?show_mine=true" class="button my_computations
+   <a href="#" onclick="showMine(true)" class="button my_computations
       {% if show_mine %} disabled {% endif %}">My Computations</a>
    <div class="clearfix"></div>
 {% endif %}
@@ -48,5 +51,7 @@
    {% endfor %}
    </tbody>
 </table>
-
+{% with number=computations.number %}
+   {% include 'pagination.html' %}
+{% endwith %}
 {% endblock %}
