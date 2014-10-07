@@ -6,14 +6,6 @@ from pydap.responses.lib import BaseResponse
 from pydap.lib import walk
 from pydap.client import open_url
 
-class ZooDashboard(SingletonModel):
-   """ Empty model used purely to generate a link on the admin frontend """
-
-   class Meta:
-      verbose_name_plural = "Dashboard"
-      verbose_name = "Dashboard"
-
-
 class ZooAdapterConfig(SingletonModel):
 
    class Meta:
@@ -214,3 +206,125 @@ class ZooAdapter():
          result_url = html_parser.unescape(result_url)
 
       return result_url
+
+class ZooDashboard(SingletonModel):
+   """ Empty model used purely to generate a link on the admin frontend """
+
+   class Meta:
+      verbose_name_plural = "Dashboard"
+      verbose_name = "Dashboard"
+
+   @staticmethod
+   def _make_request(type):
+      """Will return relevant information from a request to get SLURM info from
+      ZOO.
+
+      Keyword arguments:
+      type -- What info to get (sinfo, squeue or snodes)
+      """
+
+      if (type is not "sinfo"
+            and type is not "squeue"
+            and type is not "snodes"):
+         return None
+
+      url = (ZooAdapter.config.get_zoo_server_address() +
+             '/cgi-bin/zoo_loader.cgi?request=Execute&service=WPS'
+             '&version=1.0.0.0&identifier=slurmInfo&DataInputs=option=' + type)
+
+      filehandle = urllib.urlopen(url)
+      text = filehandle.read()
+
+      regex = '<wps:LiteralData.*?>(.*?)</wps:LiteralData>'
+      match = re.search(regex,text, re.DOTALL)
+
+      if match:
+         return match.group(1)
+
+      return None
+
+   @staticmethod
+   def _dict_from_table(lines):
+      """ Creates a dict from the tab-separated table that SLURM prints out.
+
+      Keyword arguments:
+      lines -- list of strings (each line of the SLURM output table)
+      """
+
+      return_items = []
+      item_tmp = {}
+      keys = []
+
+      # skip first line, which is just a timestamp
+      for count,line in enumerate(lines):
+
+         if line.strip():
+
+            # the first line lists keys
+            if count is 0:
+               #keys = re.split('\s+', line)
+               keys = line.split()
+               continue
+
+            # create dict from values
+            item_tmp = dict(zip(keys, line.split()))
+            return_items.append(item_tmp)
+
+      # if no values, just return empty dict with keys
+      if not return_items:
+         return dict.fromkeys(keys)
+
+      return return_items 
+
+   @staticmethod
+   def get_zoo_server_info():
+      """Reads the server info from SLURM on Zoo.
+
+      Returns a list of dictionaries containing info about the SLURM server(s).
+      Currently we just have one running, so this should just be a single item.
+      """
+   
+      text = ZooDashboard._make_request('sinfo')
+      lines = text.splitlines()[1:]
+      return ZooDashboard._dict_from_table(lines)
+
+   @staticmethod
+   def get_jobs_info():
+      """Reads job info from SLURM on Zoo.
+
+      Returns a list of dictionaries containing info about each job running on
+      SLURM.
+      """
+
+      text = ZooDashboard._make_request('squeue')
+      lines = text.splitlines()
+      return ZooDashboard._dict_from_table(lines)
+
+   @staticmethod
+   def get_node_info():
+      """ Reads node info from SLURM on Zoo.
+
+      Returns a list of dictionaries containing info about the client machines
+      running under SLURM (nodes). 
+      """
+      text = ZooDashboard._make_request('snodes')
+
+      nodes_array = []
+
+      if text is None:
+         return None
+
+      for line in text.splitlines():
+
+         if line.strip():
+            node_tmp = {}
+
+            for raw_value in line.split(' '):
+               if raw_value:
+                  value_split = raw_value.split('=')
+                  node_tmp[value_split[0]] = value_split[1]
+
+            nodes_array.append(node_tmp)
+
+      return nodes_array
+
