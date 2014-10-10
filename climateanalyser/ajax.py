@@ -37,8 +37,8 @@ def update_computation_status(request):
 
    try:
       # prepare strings for decryption 
-      encrypted_status_id = urllib.unquote(base64.b64decode(encrypted_status_id))
-      encrypted_comp_id = urllib.unquote(base64.b64decode(encrypted_comp_id))
+      encrypted_status_id = base64.b16decode(encrypted_status_id)
+      encrypted_comp_id = base64.b16decode(encrypted_comp_id)
 
       # decrypt!
       status_id = rsa.decrypt(encrypted_status_id, private_key)
