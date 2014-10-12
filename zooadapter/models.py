@@ -223,9 +223,9 @@ class ZooDashboard(SingletonModel):
       type -- What info to get (sinfo, squeue or snodes)
       """
 
-      if (type is not "sinfo"
-            and type is not "squeue"
-            and type is not "snodes"):
+      if (type is not 'sinfo'
+            and type is not 'squeue'
+            and type is not 'snodes'):
          return None
 
       url = (ZooAdapter.config.get_zoo_server_address() +
@@ -255,7 +255,6 @@ class ZooDashboard(SingletonModel):
       item_tmp = {}
       keys = []
 
-      # skip first line, which is just a timestamp
       for count,line in enumerate(lines):
 
          if line.strip():
@@ -285,8 +284,10 @@ class ZooDashboard(SingletonModel):
       """
    
       text = ZooDashboard._make_request('sinfo')
+      # skip first line, which is just a timestamp
       lines = text.splitlines()[1:]
-      return ZooDashboard._dict_from_table(lines)
+      info_dict = ZooDashboard._dict_from_table(lines)
+      return info_dict[0]
 
    @staticmethod
    def get_jobs_info():
