@@ -57,14 +57,17 @@ function getUrlParams() {
 
    var paramList = {};
 
-   //skip the first one, it's the url
+   //skip the first one - it's the url
    for (i = 1; i < urlSplit.length; i++) {
 
       var param = urlSplit[i].split("=");
 
-      paramList[param[0]] = param[1];
-
+      if (param[0] != "" && param[1] != "") {
+         paramList[param[0]] = param[1];
+      }
    }
+
+   console.log(paramList);
 
    return paramList;
 }

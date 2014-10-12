@@ -7,11 +7,12 @@ from django.http import HttpResponseRedirect
 from forms import *
 from models import *
 from django.contrib import messages
-from django.http import StreamingHttpResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.forms.util import ErrorList
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+ITEMS_PER_PAGE = 25
 
 def index(request):
    """Default app page. It's just blank. """
@@ -22,8 +23,21 @@ def index(request):
 
 def datafiles(request): 
    """View list of DataFiles in the system."""
-   return render(request, 'datafiles.html', { 'datafiles' : 
-         DataFile.objects.filter() })
+
+   page = request.GET.get('page')
+   paginator = Paginator(DataFile.objects.all(), ITEMS_PER_PAGE)
+
+   try:
+      datafiles = paginator.page(page)
+   except PageNotAnInteger:
+      datafiles = paginator.page(1)
+   except EmptyPage:
+      datafiles = paginator.page(paginator.num_pages)
+
+   page_range = range(paginator.num_pages)
+
+   return render(request, 'datafiles.html', 
+         { 'datafiles' : datafiles, 'page_range' : page_range })
 
 @login_required
 def create_datafile(request):
@@ -39,7 +53,6 @@ def create_datafile(request):
 
          messages.success(request, 'Data File successfully created!')
          return HttpResponseRedirect('/datafiles')
-      
    else:
       form = DataFileForm()
 
@@ -93,22 +106,17 @@ def computations(request):
    """View list of Computations in the system."""
 
    template_params = {}
+   page = request.GET.get('page')
 
    #Filter for current user
    if request.GET.get('show_mine'):
-      user = request.user
-      computation_list = Computation.objects.filter(created_by=user)
+      computation_list = Computation.objects.filter(created_by=request.user)
       template_params['show_mine'] = True;
    else:
-      computation_list = Computation.objects.filter()
-      computation_list = Computation.objects.all()
-      template_params['show_mine'] = False;
+      computation_list = Computation.objects.all();
 
-
-   computation_list.order_by('id')
-   paginator = Paginator(computation_list, 2)
-
-   page = request.GET.get('page')
+   computation_list = computation_list.order_by('-id')
+   paginator = Paginator(computation_list, ITEMS_PER_PAGE)
 
    try:
       computations = paginator.page(page)
@@ -122,15 +130,4 @@ def computations(request):
 
    return render(request, 'computations.html', template_params)
 
-def load_cache(request):
-   """To be used by AJAX requests to load a cached copy of a DataFile."""
 
-   file = request.GET.get('file')
-
-   if file:
-      # print contents of file directly to the screen
-      full_path = settings.CACHE_DIR + file
-      response = StreamingHttpResponse(open(full_path))
-      return response
-
-   return HttpResponse('')

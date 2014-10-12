@@ -10,7 +10,7 @@ urlpatterns = [
          name='create_computation'),
    url(r'^computations/$', views.computations, name='computations'),
    url(r'^computation$', views.computation, name='computation'),
-   url(r'^load_cache$', views.load_cache, name='load_cache'),
+   url(r'^load_cache$', ajax.load_cache, name='load_cache'),
    url(r'^load_datafile_variables$', ajax.load_datafile_variables,
          name='load_datafile_variables'),
    url(r'^update_computation_status$', ajax.update_computation_status,

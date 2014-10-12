@@ -3,6 +3,8 @@ from datetime import datetime
 from django.http import HttpResponse
 from models import DataFile,Computation
 from zooadapter.models import ZooAdapter,ZooComputationStatus
+from django.conf import settings
+from django.http import StreamingHttpResponse
 
 def load_datafile_variables(request):
 
@@ -35,8 +37,8 @@ def update_computation_status(request):
 
    try:
       # prepare strings for decryption 
-      encrypted_status_id = urllib.unquote(base64.b64decode(encrypted_status_id))
-      encrypted_comp_id = urllib.unquote(base64.b64decode(encrypted_comp_id))
+      encrypted_status_id = base64.b16decode(encrypted_status_id)
+      encrypted_comp_id = base64.b16decode(encrypted_comp_id)
 
       # decrypt!
       status_id = rsa.decrypt(encrypted_status_id, private_key)
@@ -105,3 +107,16 @@ def get_data_value(request):
       response = '{"value":' + str(respJSON[u'max']) + '}'
 
    return HttpResponse(response, content_type='application/json')
+
+def load_cache(request):
+   """To be used by AJAX requests to load a cached copy of a DataFile."""
+
+   file = request.GET.get('file')
+
+   if file:
+      # print contents of file directly to the screen
+      full_path = settings.CACHE_DIR + file
+      response = StreamingHttpResponse(open(full_path))
+      return response
+
+   return HttpResponse('')

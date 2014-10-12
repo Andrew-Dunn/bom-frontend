@@ -1,5 +1,8 @@
-<div class="page_range">
-{% for i in page_range %}
+{% load staticfiles %}
+<script src="{% static "climateanalyser/js/pagination.js" %}"></script>
+
+<div class="pagination">
+{% for i in pages %}
 
    {% if number = i|add:"1" %}
       <span>{{i|add:"1"}}</span>

@@ -1,14 +1,5 @@
 (function($){
    $(window).ready(function(){
-      switch (calculation) {
-      case 'correlate':
-         calculation = 'correlation';
-         break;
-      case 'regress':
-         calculation = 'regression';
-         break;
-      }
-
    // First
    var wmsResource = resultPath.split('?')[0];
    var rangeURL = "/get_data_range?wms_resource="

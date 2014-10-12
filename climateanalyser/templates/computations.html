@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
+{% load customtags %}
+
 {% block content %}
 
 <h1>Computations</h1>
-
-{% load staticfiles %}
-<script src="{% static "climateanalyser/js/pagination.js" %}"></script>
 
 <div class="controls">
 {% if user.username %}
@@ -51,7 +50,5 @@
    {% endfor %}
    </tbody>
 </table>
-{% with number=computations.number %}
-   {% include 'pagination.html' %}
-{% endwith %}
+{% pagination computations.pagination.num_pages page_range %}
 {% endblock %}

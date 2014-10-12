@@ -2,5 +2,44 @@
 
 {% block content %}
 
-My view page template stuff.
+<h1>Dashboard</h1>
+
+{{ server_info }}
+<br />
+<br />
+<h2>Jobs</h2>
+{{ job_info }}
+<br />
+<br />
+<br />
+<h2>Nodes</h2>
+<table>
+   <thead>
+      <tr>
+         <th>CPU Load</th>
+         <th>Arch</th>
+         <th>Memory</th>
+         <th>State</th>
+         <th>Version</th>
+         <th>OS</th>
+         <th>SLURM start time</th>
+         <th>Boot time</th>
+      </tr>
+   </thead>
+   {% for node in node_info %}
+   <tbody>
+      <tr>
+         <td>{{ node.CPULoad }}</td>
+         <td>{{ node.Arch }}</td>
+         <td>{{ node.RealMemory }} </td>
+         <td>{{ node.State }}</td>
+         <td>{{ node.Version }}</td>
+         <td>{{ node.OS }}</td>
+         <td>{{ node.SlurmdStartTime }}</td>
+         <td>{{ node.BootTime }}</td>
+      </tr>
+   </tbody>
+{% endfor %}
+</table>
+
 {% endblock %}
