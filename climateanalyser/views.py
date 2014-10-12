@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.forms.util import ErrorList
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from urlparse import urlparse
 
 ITEMS_PER_PAGE = 25
 
@@ -35,6 +36,8 @@ def datafiles(request):
       datafiles = paginator.page(paginator.num_pages)
 
    page_range = range(paginator.num_pages)
+   for datafile in datafiles:
+      datafile.filename =  urlparse(datafile.file_url).path.split('/')[-1]
 
    return render(request, 'datafiles.html', 
          { 'datafiles' : datafiles, 'page_range' : page_range })

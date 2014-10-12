@@ -17,7 +17,7 @@
    <thead>
       <tr>
          <th>ID</th>
-         <th>URL</th>
+         <th>File Name</th>
          <th>Download</th>
       </tr>
    </thead>
@@ -25,7 +25,7 @@
    {% for datafile in datafiles %}
       <tr>
          <td>#{{ datafile.id }}</td>
-         <td>{{ datafile.file_url }}</td>
+         <td>{{ datafile.filename }}</td>
          <td><a href="/load_cache?file={{ datafile.cached_file }}">Download</a>
          </td>
       </tr>

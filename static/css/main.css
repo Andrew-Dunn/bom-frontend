@@ -340,7 +340,7 @@ td {
  * NEW COMPUTAITION PAGE
  * ############################################################# */
 
-#main .new_computation .datafile_formset_new {
+#main .new_computation .datafile_formset {
    background:#f0eeeb;
    width:48%;
    box-sizing:border-box;
@@ -349,15 +349,15 @@ td {
    margin-bottom:20px;
 }
 
-#main .new_computation .datafile_formset_new:nth-child(2n+1) {
+#main .new_computation .datafile_formset:nth-child(2n+1) {
    float:right;
 }
 
-#main .new_computation .datafile_formset_new:nth-child(2n+2) {
+#main .new_computation .datafile_formset:nth-child(2n+2) {
    float:left;
 }
 
-#main .new_computation .datafile_formset_new select {
+#main .new_computation .datafile_formset select {
    width:100%;
 }
 
@@ -374,4 +374,16 @@ td {
    width:78%;
    padding-right:2%;
    background:#f0eeeb;
+}
+
+/* #############################################################
+ * PAGINATION
+ * ############################################################# */
+
+#main .pagination {
+   clear:both;
+   padding:20px;
+   background: #f0eeeb;
+   float:left;
+   margin-top:20px;
 }
