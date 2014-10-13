@@ -54,7 +54,7 @@ def update_computation_status(request):
       computation.status = status
 
       # if job is completed, update its completed_date
-      if status.status is 'success':
+      if status.status == 'success':
          computation.completed_date = datetime.now()
 
       computation.save()
