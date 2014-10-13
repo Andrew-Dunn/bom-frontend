@@ -62,14 +62,7 @@ class DataFile(models.Model):
    def update_cache(self):
       """ Update our local cache file, ONLY if necessary."""
 
-      '''
-      dds_addr = self._get_opendap_addr() + '.dds'
-
-      local_last_modified = Common.get_http_last_modified(dds_addr)
-      remote_last_modified = Common.get_http_last_modified(self.file_url)
-      '''
       # update cache if necessary
-      #if remote_last_modified > local_last_modified:
       if self.get_remote_last_modified() > self.get_local_last_modified():
          self.__save_cache()
 
@@ -173,17 +166,13 @@ class Computation(models.Model):
       existing_computation = self._check_for_existing_result()
 
       if existing_computation: 
-
          self.status = existing_computation.status
          self.result_wms = existing_computation.result_wms
          self.result_nc = existing_computation.result_nc
          self.result_opendap = existing_computation.result_opendap
          self.completed_date = datetime.now()
-
       else:
-
          result_bundle = ZooAdapter.schedule_computation(self)
-
          self.status = result_bundle['status']
          self.result_wms = result_bundle['result_links']['wms']
          self.result_nc = result_bundle['result_links']['nc']

@@ -7,8 +7,8 @@ def zoo_dashboard(request):
 
    server_info = ZooDashboard.get_zoo_server_info()
    job_info = ZooDashboard.get_jobs_info()
-   node_info = ZooDashboard.get_node_info()
-
+   node_info = ZooDashboard.get_nodes_info()
+   
    return render(request, 'admin/zoo_dashboard.html', 
          { 'server_info' : server_info,
            'job_info' : job_info,

@@ -171,7 +171,7 @@ class ZooAdapter():
             
       #append all data files
       for data in computation.get_computationdata():
-         datafiles_str += data.datafile.file_url + '?'
+         datafiles_str += data.datafile.cached_file + '?'
          datafiles_str += ','.join(data.variables) + ','
 
       #Remove trailing comma
@@ -179,8 +179,6 @@ class ZooAdapter():
 
       #add computation id
       descriptor_file += ';jobid=' + str(computation.id)
-
-      print descriptor_file
 
       return descriptor_file
 
@@ -261,17 +259,14 @@ class ZooDashboard(SingletonModel):
 
             # the first line lists keys
             if count is 0:
-               #keys = re.split('\s+', line)
                keys = line.split()
+               # convert to lower-case
+               keys = map(str.lower, keys)
                continue
 
             # create dict from values
             item_tmp = dict(zip(keys, line.split()))
             return_items.append(item_tmp)
-
-      # if no values, just return empty dict with keys
-      if not return_items:
-         return dict.fromkeys(keys)
 
       return return_items 
 
@@ -302,7 +297,7 @@ class ZooDashboard(SingletonModel):
       return ZooDashboard._dict_from_table(lines)
 
    @staticmethod
-   def get_node_info():
+   def get_nodes_info():
       """ Reads node info from SLURM on Zoo.
 
       Returns a list of dictionaries containing info about the client machines
@@ -323,7 +318,8 @@ class ZooDashboard(SingletonModel):
             for raw_value in line.split(' '):
                if raw_value:
                   value_split = raw_value.split('=')
-                  node_tmp[value_split[0]] = value_split[1]
+                  key = value_split[0].lower()
+                  node_tmp[key] = value_split[1]
 
             nodes_array.append(node_tmp)
 
