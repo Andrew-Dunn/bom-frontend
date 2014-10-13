@@ -48,6 +48,12 @@
                            <a href="/computations" class="button">Computations</a>
                        </li>
                     {% endif %}
+                    {% if user.is_superuser %}
+                    <li>
+                       <a href="/admin" target="_blank" class="button" >Admin Portal </a>   
+                    </li>
+                    {% endif %}
+
                     <li>
                         {% if user.is_authenticated %}
                            <a href="/logout" class="button">Logout</a>
@@ -84,30 +90,6 @@
       <div id="footer">
          <div class="wrapper">
 	         <span>Climate Analyser </span>&copy <span>Bureau of Meteorology 2014-present</span>
-            <ul class="menu clearfix">
-                   <li>
-                       <a href="/">Home</a>
-                   </li>
-                {% if user.is_authenticated %}
-                   <li>
-                       <a href="/profile">Profile</a>
-                   </li>
-                   <li>
-                       <a href="/datafiles">Data Files</a>
-                   </li>
-                   <li>
-                       <a href="/computations">Computations</a>
-                   </li>
-                {% endif %}
-                <li>
-                    {% if user.is_authenticated %}
-                       <a href="/logout">Logout</a>
-                    {% else %}
-                       <a href="/login">Login</a>
-                    {% endif %}
-                </li>
-            </ul>
-
 	         <div id="zooming">
 	            <a title="Increase text size" href="javascript:void 0;" class="zoom-in button">A+</a>
 	            <a title="Decrease text size" href="javascript:void 0;" class="zoom-out button">A-</a>
