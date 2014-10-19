@@ -1,4 +1,4 @@
-from django.db.models.signals import post_delete,post_save
+from django.db.models.signals import post_delete,pre_save
 from models import DataFile,Computation
 import os
 from django.conf import settings
@@ -8,4 +8,8 @@ def delete_cache(sender, **kwargs):
    """ Delete local cache file when deleting a DataFile from the system. """
    os.remove(settings.CACHE_DIR + kwargs['instance'].cached_file)
 
+def save_cache(sender, **kwargs):
+   kwargs['instance'].save_cache()
+
 post_delete.connect(delete_cache, sender=DataFile)
+pre_save.connect(save_cache, sender=DataFile)

@@ -30,20 +30,16 @@ class DataFile(models.Model):
    file_url = models.CharField(max_length=1000,unique=True)
    cached_file = models.CharField(max_length=1000)
    variables = JSONField()
-
-   def clean(self):
-      #Create cached file and save data
-      self._save_cache()
-
-      self.variables = ZooAdapter.get_datafile_variables(
-            self._get_opendap_addr())
-
-   def _save_cache(self):
+   
+   def save_cache(self):
       """ Cache the file on the OpenDAP server."""
       #file name is md5 string of url
       self.cached_file = hashlib.md5(self.file_url).hexdigest() + '.nc'
       response = urllib.urlretrieve(self.file_url, 
             settings.CACHE_DIR + self.cached_file)
+
+      self.variables = ZooAdapter.get_datafile_variables(
+            self._get_opendap_addr())
 
    def _get_opendap_addr(self):
       """Get the address of the file on OpenDAP, after saving cache."""
@@ -64,7 +60,7 @@ class DataFile(models.Model):
 
       # update cache if necessary
       if self.get_remote_last_modified() > self.get_local_last_modified():
-         self.__save_cache()
+         self.save_cache()
 
    def get_variables(self):
       return json.loads(self.variables)
