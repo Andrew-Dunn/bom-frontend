@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 import hashlib, urllib 
+import time
 from jsonfield import JSONField
 from zooadapter.models import ZooAdapter,ZooComputationStatus
 from solo.models import SingletonModel
@@ -37,7 +38,7 @@ class DataFile(models.Model):
 
       md5_str = hashlib.md5(self.file_url).hexdigest()
 
-      self.cached_file = md5_str + '_' + time.now() + '.nc'
+      self.cached_file = md5_str + '_' + str(time.time()) + '.nc'
       response = urllib.urlretrieve(self.file_url, 
             settings.CACHE_DIR + self.cached_file)
 

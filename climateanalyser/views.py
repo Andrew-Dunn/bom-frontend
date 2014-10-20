@@ -49,13 +49,17 @@ def create_datafile(request):
 
       if form.is_valid():
 
-         form.save()
+         # we can't check if  file is valid in clean() so we must handle
+         # errors when saving
 
-         messages.success(request, 'Data File successfully created!')
-         return HttpResponseRedirect('/datafiles')
-   else:
-      form = DataFileForm()
+         try:
+            form.save()
+            messages.success(request, 'Data File successfully created!')
+            return HttpResponseRedirect('/datafiles')
+         except IOError:
+            messages.error(request, 'Error handling file.')
 
+   form = DataFileForm()
    return render(request, 'create_datafile.html', { 'form' : form })
 
 @login_required
