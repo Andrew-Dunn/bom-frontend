@@ -21,6 +21,4 @@ class ZooAdapterConfigAdmin(SingletonModelAdmin):
    form = AdminZooAdapterConfigForm
 
 admin.site.register(ZooAdapterConfig, ZooAdapterConfigAdmin)
-
-# ZooDashboard is an empty model used just so Django creates a link
 admin.site.register(ZooDashboard, SingletonModelAdmin)

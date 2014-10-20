@@ -120,3 +120,12 @@ def load_cache(request):
       return response
 
    return HttpResponse('')
+
+def update_datafile_cache(request):
+   """Update cache for all datafiles."""
+
+   for datafile in DataFile.objects.all():
+      datafile.update_cache()
+
+   return HttpResponse('success')
+
