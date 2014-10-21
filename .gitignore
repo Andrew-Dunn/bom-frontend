@@ -1,4 +1,7 @@
 /bom/settings.py
+python27/
+nohup.out
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

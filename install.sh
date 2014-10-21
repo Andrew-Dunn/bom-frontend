@@ -8,12 +8,45 @@ fi
 RUNASUSER="sudo -u $SUDO_USER"
 RUNASPOSTGRES="sudo -u postgres"
 
-yum -y install python-devel python-pip python-virtualenv postgresql \
-               postgresql-devel postgresql-server postgresql-plpython
+yum -y install postgresql postgresql-devel postgresql-server
+
+
+if [ ! -x python27/bin/python2.7 ]; then
+    $RUNASUSER bash <<FIN
+wget https://www.python.org/ftp/python/2.7.8/Python-2.7.8.tgz
+tar -xzf Python-2.7.8.tgz
+rm Python-2.7.8.tgz
+FIN
+
+    pushd Python-2.7.8
+
+    $RUNASUSER bash <<FIN
+./configure --prefix=$PWD/../python27
+make
+make install
+FIN
+
+    popd
+
+    rm -rf Python-2.7.8
+fi
+
+export PATH=$PWD/python27/bin:$PATH
+
+# Install python setuptools.
+wget https://bootstrap.pypa.io/ez_setup.py -O - | python2.7
+
+rm setuptools-7.0.zip
+
+# Install pip
+wget https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py -O - | python2.7
+
+# Install virtualenv
+pip2.7 install virtualenv
 
 virtualenv env
 source ./env/bin/activate
-cat dev/requirements.txt | xargs -L1 pip install
+cat dev/requirements.txt | xargs -L1 pip2.7 install
 deactivate
 
 $RUNASUSER bash <<FIN

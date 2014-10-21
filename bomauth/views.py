@@ -2,8 +2,8 @@ from django.template.loader import get_template
 from django.template import RequestContext,loader
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from auth.models import *
-from auth.forms import *
+from bomauth.models import *
+from bomauth.forms import *
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -49,11 +49,11 @@ def change_password(request):
       html = t.render(context)
       return HttpResponse(html)
    else:
-      return HttpResponseRedirect('/auth/login')
+      return HttpResponseRedirect('/bomauth/login')
 
 def profile(request):
    profile = request.user
-   mycomputations = Computation.objects.filter(created_by = request.user)
+   mycomputations = Computation.objects.filter(created_by = request.user.id)
    t = loader.get_template('profile.html')
    context = RequestContext(request, { 'profile':profile, 'mycomputations':mycomputations })
    html = t.render(context)
