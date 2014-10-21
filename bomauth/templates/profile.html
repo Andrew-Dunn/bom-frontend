@@ -8,9 +8,6 @@
       <p>First Name: <span class="first-name">{{ profile.first_name }}</span></p>
       <p>Last Name: <span class="last-name"{{ profile.last_name }}</span></p>
       <p>Email: <span class="email">{{ profile.email }}</span></p>
-      <div class="profile-buttons">
-         <a href="#" class="button edit-profile">Edit profile</a>
-      </div>
    </div>
 
    <table class="my-computations">
@@ -27,8 +24,8 @@
          <tr>
             <td><a href="/computation?id={{ computation.id }}">
                   #{{ computation.id }}</a></td>
-            <td>{{ computation.status.capitalize }}</td>
-            <td>{{ computation.calculation.capitalize }}</td>
+            <td>{{ computation.status.status.capitalize }}</td>
+            <td>{{ computation.calculation.name.capitalize }}</td>
             <td>{{ computation.created_date }}</td>
          </tr>
       {% empty %}

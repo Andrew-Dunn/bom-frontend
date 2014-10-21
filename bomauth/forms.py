@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+import re
 
 class UserRegisterForm(forms.Form):
    first_name = forms.CharField(1000, required=True)
@@ -17,6 +18,10 @@ class UserRegisterForm(forms.Form):
 
       if email and User.objects.filter(email=email).exclude(username=username).count():
          raise forms.ValidationError('This email address is already in use. Please supply a different email address.')
+         return email
+
+      if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+         raise forms.ValidationError('Invalid email address')
          return email
 
    def clean_username(self):
