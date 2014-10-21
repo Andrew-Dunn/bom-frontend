@@ -28,7 +28,7 @@
 }
 
 #map .wms-legend table tr td {
-   position: relative
+   position: relative;
    padding: 0px;
    border: none;
 }
