@@ -4,40 +4,113 @@
 
 <h1>Dashboard</h1>
 
-{{ server_info }}
-<br />
-<br />
+<h2>Zoo Server</h2>
+<div>
+   <div><b>TmpDisk: </b>{{ server_info.tmp_disk }}</div>
+   <div><b>Weight: </b>{{ server_info.weight }}</div>
+   <div><b>Partition: </b>{{ server_info.partition }}</div>
+   <div><b>CPUs: </b>{{ server_info.cpus }}</div>
+   <div><b>State: </b>{{ server_info.state }}</div>
+   <div><b>Memory: </b>{{ server_info.memory }}</div>
+   <div><b>Reason: </b>{{ server_info.reason }}</div>
+   <div><b>Features: </b>{{ server_info.features }}</div>
+</div>
 <h2>Jobs</h2>
-{{ job_info }}
-<br />
-<br />
-<br />
-<h2>Nodes</h2>
 <table>
    <thead>
       <tr>
-         <th>CPU Load</th>
-         <th>Arch</th>
-         <th>Memory</th>
-         <th>State</th>
-         <th>Version</th>
-         <th>OS</th>
-         <th>SLURM start time</th>
-         <th>Boot time</th>
+         <th>Name</th>
+         <th>Partition</th>
+         <th>ST</th>
+         <th>User</th>
+         <th>Time</th>
+         <th>Nodes</th>
+         <th>Job ID</th>
       </tr>
+   </thead>
+   <tbody>
+   {% for job in job_info %}
+      <tr>
+         <td>{{ job.name }}</td>
+         <td>{{ job.partition }}</td>
+         <td>{{ job.st }}</td>
+         <td>{{ job.user }}</td>
+         <td>{{ job.time }}</td>
+         <td>{{ job.nodes }}</td>
+         <td>{{ job.jobid }}</td>
+      </tr>
+   {% endfor %}
+   </tbody>
+</table>
+<h2>Nodes</h2>
+{{ node_info.keys }}
+<table>
+   <thead>
+      <tr>
+         <th>Consumed Joules</th>
+         <th>Version</th>
+         <th>Weight</th>
+         <th>CPU Load</th>
+         <th>Sockets</th>
+         <th>Features</th>
+         <th>Allocmem</th>
+         <th>Node Hostname</th>
+         <th>State</th>
+         <th>Boot Time</th>
+         <th>Lowest Joules</th>
+         <th>Real Memory</th>
+         <th>Node Name</th>
+         <th>Current Watts</th>
+         <th>SLURMd Start Time</th>
+         <th>CPUalloc</th>
+         <th>Threads Per Core</th>
+         <th>Arch</th>
+         <th>Node Addr</th>
+         <th>Boards</th>
+         <th>Tmp Disk</th>
+         <th>Ext Sensors Joules</th>
+         <th>Gres</th>
+         <th>Ext Sensors Watts</th>
+         <th>Cores Per Socket</th>
+         <th>CPU Err</th>
+         <th>OS</th>
+         <th>CPU Tot</th>
+         <th>Ext Sensors Temp</th>
+     </tr>
    </thead>
    {% for node in node_info %}
    <tbody>
       <tr>
-         <td>{{ node.CPULoad }}</td>
-         <td>{{ node.Arch }}</td>
-         <td>{{ node.RealMemory }} </td>
-         <td>{{ node.State }}</td>
-         <td>{{ node.Version }}</td>
-         <td>{{ node.OS }}</td>
-         <td>{{ node.SlurmdStartTime }}</td>
-         <td>{{ node.BootTime }}</td>
-      </tr>
+         <td>{{ node.consumedjoules }}</td>
+         <td>{{ node.version }}</td>
+         <td>{{ node.weight }}</td>
+         <td>{{ node.cpuload }}</td>
+         <td>{{ node.sockets }}</td>
+         <td>{{ node.features }}</td>
+         <td>{{ node.allocmem }}</td>
+         <td>{{ node.nodehostname }}</td>
+         <td>{{ node.state }}</td>
+         <td>{{ node.boottime }}</td>
+         <td>{{ node.lowestjoules }}</td>
+         <td>{{ node.realmemory }}</td>
+         <td>{{ node.nodename }}</td>
+         <td>{{ node.currentwatts }}</td>
+         <td>{{ node.slurmdstarttime }}</td>
+         <td>{{ node.cpualloc }}</td>
+         <td>{{ node.threadspercore }}</td>
+         <td>{{ node.arch }}</td>
+         <td>{{ node.nodeaddr }}</td>
+         <td>{{ node.boards }}</td>
+         <td>{{ node.tmpdisk }}</td>
+         <td>{{ node.extsensorsjoules }}</td>
+         <td>{{ node.gres }}</td>
+         <td>{{ node.extsensorswatts }}</td>
+         <td>{{ node.corespersocket }}</td>
+         <td>{{ node.cpuerr }}</td>
+         <td>{{ node.os }}</td>
+         <td>{{ node.cputot }}</td>
+         <td>{{ node.extsensorstemp }}</td>
+     </tr>
    </tbody>
 {% endfor %}
 </table>

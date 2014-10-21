@@ -17,4 +17,6 @@ urlpatterns = [
          name='update_computation_status'),
    url(r'^get_data_range$', ajax.get_data_range, name='get_data_range'),
    url(r'^get_data_value$', ajax.get_data_value, name='get_data_value'),
+   url(r'^update_datafile_cache$', ajax.update_datafile_cache, 
+         name='update_datafile_cache'),
 ]

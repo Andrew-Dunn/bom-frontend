@@ -54,7 +54,7 @@ def update_computation_status(request):
       computation.status = status
 
       # if job is completed, update its completed_date
-      if status.status is 'success':
+      if status.status == 'success':
          computation.completed_date = datetime.now()
 
       computation.save()
@@ -120,3 +120,12 @@ def load_cache(request):
       return response
 
    return HttpResponse('')
+
+def update_datafile_cache(request):
+   """Update cache for all datafiles."""
+
+   for datafile in DataFile.objects.all():
+      datafile.update_cache()
+
+   return HttpResponse('success')
+

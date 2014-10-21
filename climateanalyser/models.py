@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 import hashlib, urllib 
+import time
 from jsonfield import JSONField
 from zooadapter.models import ZooAdapter,ZooComputationStatus
 from solo.models import SingletonModel
@@ -30,20 +31,19 @@ class DataFile(models.Model):
    file_url = models.CharField(max_length=1000,unique=True)
    cached_file = models.CharField(max_length=1000)
    variables = JSONField()
+   
+   def save_cache(self):
+      """ Cache the file on the OpenDAP server."""
+      #file name is md5 string of url
 
-   def clean(self):
-      #Create cached file and save data
-      self._save_cache()
+      md5_str = hashlib.md5(self.file_url).hexdigest()
+
+      self.cached_file = md5_str + '_' + str(time.time()) + '.nc'
+      response = urllib.urlretrieve(self.file_url, 
+            settings.CACHE_DIR + self.cached_file)
 
       self.variables = ZooAdapter.get_datafile_variables(
             self._get_opendap_addr())
-
-   def _save_cache(self):
-      """ Cache the file on the OpenDAP server."""
-      #file name is md5 string of url
-      self.cached_file = hashlib.md5(self.file_url).hexdigest() + '.nc'
-      response = urllib.urlretrieve(self.file_url, 
-            settings.CACHE_DIR + self.cached_file)
 
    def _get_opendap_addr(self):
       """Get the address of the file on OpenDAP, after saving cache."""
@@ -62,16 +62,9 @@ class DataFile(models.Model):
    def update_cache(self):
       """ Update our local cache file, ONLY if necessary."""
 
-      '''
-      dds_addr = self._get_opendap_addr() + '.dds'
-
-      local_last_modified = Common.get_http_last_modified(dds_addr)
-      remote_last_modified = Common.get_http_last_modified(self.file_url)
-      '''
       # update cache if necessary
-      #if remote_last_modified > local_last_modified:
       if self.get_remote_last_modified() > self.get_local_last_modified():
-         self.__save_cache()
+         self.save_cache()
 
    def get_variables(self):
       return json.loads(self.variables)
@@ -173,17 +166,13 @@ class Computation(models.Model):
       existing_computation = self._check_for_existing_result()
 
       if existing_computation: 
-
          self.status = existing_computation.status
          self.result_wms = existing_computation.result_wms
          self.result_nc = existing_computation.result_nc
          self.result_opendap = existing_computation.result_opendap
          self.completed_date = datetime.now()
-
       else:
-
          result_bundle = ZooAdapter.schedule_computation(self)
-
          self.status = result_bundle['status']
          self.result_wms = result_bundle['result_links']['wms']
          self.result_nc = result_bundle['result_links']['nc']
