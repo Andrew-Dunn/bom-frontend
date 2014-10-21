@@ -323,8 +323,9 @@ class ZooDashboard(SingletonModel):
             for raw_value in line.split(' '):
                if raw_value:
                   value_split = raw_value.split('=')
-                  key = value_split[0].lower()
-                  node_tmp[key] = value_split[1]
+                  if len(value_split) > 1:
+                     key = value_split[0].lower()
+                     node_tmp[key] = value_split[1]
 
             nodes_array.append(node_tmp)
 
