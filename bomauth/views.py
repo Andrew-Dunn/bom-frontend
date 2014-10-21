@@ -19,7 +19,6 @@ def index(request):
    return HttpResponse(html)
 
 def register(request):
-
    if request.method == 'POST':
       form = UserRegisterForm(request.POST)
       userName = request.REQUEST.get('username', None)
@@ -29,11 +28,11 @@ def register(request):
       userLast = request.REQUEST.get('last_name', None)
       if form.is_valid():
          user = User.objects.create_user(username = userName, email = userMail,
-                                         password = userPass)
+               password = userPass)
          user.last_name = userLast;
          user.first_name = userFirst;
          user.save();
-         return HttpResponseRedirect('/')
+         return HttpResponseRedirect('/login/')
       else:
          t = loader.get_template('register.html')
          context = RequestContext(request, { 'form':form })
@@ -54,7 +53,7 @@ def change_password(request):
       html = t.render(context)
       return HttpResponse(html)
    else:
-      return HttpResponseRedirect('/bomauth/login')
+      return HttpResponseRedirect('/login')
 
 def profile(request):
    profile = request.user
