@@ -3,6 +3,7 @@
 {% block title %}Create an account{% endblock %}
 
 {% block content %}
+   <div class="register-wrapper">
    <h1>Create an account</h1>
    <form action="/register/" method="post">
       {% csrf_token %}
@@ -10,5 +11,6 @@
      
       <input type="submit" value="Register">
    </form>
+   </div>
 
 {% endblock %}

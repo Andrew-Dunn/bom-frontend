@@ -40,8 +40,10 @@
 </div>
 
 <div class="clearfix"></div>
+{% if computation.status.status.capitalize == "Success" %}
 <div id="map">
 </div>
+{% endif %}
 
 <div class="data_files">
    <h2>Input Files</h2>
@@ -65,11 +67,13 @@
    </table>
 </div>
 
+{% if computation.status.status.capitalize == "Success" %}
 <div class="result_file">
    <h2>Result File</h2>
    <div class="item result">
       <span class="value"><a href="{{ computation.result_nc }}">Download as NC File</a></span>
    </div>
 </div>
+{% endif %}
 {% endblock %}
 

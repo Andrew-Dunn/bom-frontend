@@ -1,4 +1,5 @@
 from django.template.loader import get_template
+from django.contrib import messages
 from django.template import RequestContext,loader
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -31,19 +32,19 @@ def register(request):
          user.last_name = userLast;
          user.first_name = userFirst;
          user.save();
-         return HttpResponseRedirect('/login/')
-      else:
-         t = loader.get_template('register.html')
-         context = RequestContext(request, { 'form':form })
-         html = t.render(context)
-         return HttpResponse(html)
-   else:
-      form = UserRegisterForm(request.POST)
-      userName = request.REQUEST.get('username', None)
+	 messages.add_message(request, messages.INFO, 'User created successfully')
+         return HttpResponseRedirect('/login')
       t = loader.get_template('register.html')
       context = RequestContext(request, { 'form':form })
       html = t.render(context)
       return HttpResponse(html)
+
+   form = UserRegisterForm(request.POST)
+   userName = request.REQUEST.get('username', None)
+   t = loader.get_template('register.html')
+   context = RequestContext(request, { 'form':form })
+   html = t.render(context)
+   return HttpResponse(html)
 
 def change_password(request):
    if request.user.is_authenticated():
