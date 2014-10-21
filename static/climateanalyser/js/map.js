@@ -22,6 +22,7 @@
                        wmsResource +
                           "?REQUEST=GetLegendGraphic" +
                           "&COLORBARONLY=true" +
+                          "&PALETTE=climate_analyser" +
                           "&WIDTH=20&HEIGHT=" + (this.height - 2) + "' />" +
                           "<table cellpadding='0' cellspacing='0' style='" + 
                              "height: " + this.height + "px'>" +
