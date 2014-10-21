@@ -100,6 +100,4 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 CACHE_DIR = BASE_DIR + '/../../datafiles/inputs/'
 
-AUTH_PROFILE_MODULE = 'bomauth.User'
-
 LOGIN_REDIRECT_URL = '/profile'
