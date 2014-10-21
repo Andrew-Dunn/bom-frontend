@@ -34,8 +34,13 @@ def register(request):
          user.first_name = userFirst;
          user.save();
          return HttpResponseRedirect('/')
+      else:
+         t = loader.get_template('register.html')
+         context = RequestContext(request, { 'form':form })
+         html = t.render(context)
+         return HttpResponse(html)
    else:
-      form = UserRegisterForm()
+      form = UserRegisterForm(request.POST)
       userName = request.REQUEST.get('username', None)
       t = loader.get_template('register.html')
       context = RequestContext(request, { 'form':form })
