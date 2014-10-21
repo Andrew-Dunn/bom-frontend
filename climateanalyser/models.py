@@ -36,9 +36,9 @@ class DataFile(models.Model):
       """ Cache the file on the OpenDAP server."""
       #file name is md5 string of url
 
-      md5_str = hashlib.md5(self.file_url).hexdigest()
+      md5_str = hashlib.md5(self.file_url + str(time.time())).hexdigest()
 
-      self.cached_file = md5_str + '_' + str(time.time()) + '.nc'
+      self.cached_file = md5_str + '.nc'
       response = urllib.urlretrieve(self.file_url, 
             settings.CACHE_DIR + self.cached_file)
 

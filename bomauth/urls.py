@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from auth import views
+from bomauth import views
 
 urlpatterns = [
    url(r'^$', views.index, name='index'),

@@ -5,7 +5,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
    url(r'^', include('climateanalyser.urls')),
-   url(r'^', include('auth.urls')),
+   url(r'^', include('bomauth.urls')),
    url(r'^', include('zooadapter.urls')),
    url(r'^admin/', include(admin.site.urls)),
 )
