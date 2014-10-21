@@ -280,9 +280,11 @@ class ZooDashboard(SingletonModel):
    
       text = ZooDashboard._make_request('sinfo')
       # skip first line, which is just a timestamp
-      lines = text.splitlines()[1:]
-      info_dict = ZooDashboard._dict_from_table(lines)
-      return info_dict[0]
+      if text:
+         lines = text.splitlines()[1:]
+         info_dict = ZooDashboard._dict_from_table(lines)
+         return info_dict[0]
+      return None
 
    @staticmethod
    def get_jobs_info():
@@ -293,8 +295,11 @@ class ZooDashboard(SingletonModel):
       """
 
       text = ZooDashboard._make_request('squeue')
-      lines = text.splitlines()
-      return ZooDashboard._dict_from_table(lines)
+      
+      if text:
+         lines = text.splitlines()
+         return ZooDashboard._dict_from_table(lines)
+      return None
 
    @staticmethod
    def get_nodes_info():
