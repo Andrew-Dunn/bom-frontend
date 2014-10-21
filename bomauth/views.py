@@ -2,7 +2,6 @@ from django.template.loader import get_template
 from django.template import RequestContext,loader
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from bomauth.models import *
 from bomauth.forms import *
 from django.shortcuts import render
 from django.contrib.auth.models import User
