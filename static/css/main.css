@@ -368,12 +368,13 @@ td {
    margin-bottom:20px;
 }
 
-#main .new_computation .datafile_formset:nth-child(2n+1) {
+#main .new_computation .datafile_formset:nth-child(1n+1) {
    float:right;
 }
 
 #main .new_computation .datafile_formset:nth-child(2n+2) {
    float:left;
+   clear:left;
 }
 
 #main .new_computation .datafile_formset select {
@@ -395,6 +396,14 @@ td {
    background:#f0eeeb;
 }
 
+/* #############################################################
+ * DATA FILES PAGE
+ * ############################################################# */
+#main .new-datafile-wrapper {
+   background:#f0eeeb; 
+   padding:30px;
+   width:50%;
+}
 /* #############################################################
  * PAGINATION
  * ############################################################# */

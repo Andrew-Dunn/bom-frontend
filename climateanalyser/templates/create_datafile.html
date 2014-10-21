@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<h1>New Data File</h1>
-<form action="/create_datafile/" method="post">
-   {% csrf_token %}
-   {{ form.as_p }}
-   <input type="submit" value="Submit" class="button" />
-</form>
-
+<div class="new-datafile-wrapper">
+   <h1>New Data File</h1>
+   <form action="/create_datafile/" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Submit" class="button" />
+   </form>
+</div>
 {% endblock %}
