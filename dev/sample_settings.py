@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-CACHE_DIR = os.path.join(BASE_DIR, 'cache') + os.sep
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -100,8 +98,8 @@ STATICFILES_DIRS = (
       os.path.join(BASE_DIR, 'static'),
 )
 
+CACHE_DIR = os.path.join(BASE_DIR, 'datafiles', 'inputs') + os.sep
+
 LOGIN_REDIRECT_URL = '/profile'
 
 LOGIN_URL = '/login'
-
-CACHE_DIR = BASE_DIR + '/../../datafiles/inputs/'
