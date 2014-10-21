@@ -366,15 +366,11 @@ td {
    padding:1em 2em;
    min-height:225px;
    margin-bottom:20px;
-}
-
-#main .new_computation .datafile_formset:nth-child(1n+1) {
-   float:right;
-}
-
-#main .new_computation .datafile_formset:nth-child(2n+2) {
    float:left;
-   clear:left;
+   margin-right:4%;
+}
+#main .new_computation .datafile_formset:nth-child(even) {
+   margin-right:0;
 }
 
 #main .new_computation .datafile_formset select {

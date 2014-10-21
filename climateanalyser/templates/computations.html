@@ -25,8 +25,8 @@
          <th>Calculation</th>
          <th>Status</th>
          <th>Created By</th>
-         <th>Created Date</th>
-         <th>Completed Date</th>
+         <th class="mobileHide">Created Date</th>
+         <th class="mobileHide">Completed Date</th>
       </tr>
    </thead>
    <tbody>
@@ -37,8 +37,8 @@
          <td>{{ computation.calculation.name.capitalize }}</td>
          <td>{{ computation.status.status.capitalize }}</td>
          <td>{{ computation.created_by.username }}</td>
-         <td>{{ computation.created_date }}</td>
-         <td>{{ computation.completed_date }}</td>
+         <td class="mobileHide">{{ computation.created_date }}</td>
+         <td class="mobileHide">{{ computation.completed_date }}</td>
       </tr>
    {% empty %}
       <tr>

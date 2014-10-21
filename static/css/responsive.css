@@ -1,6 +1,18 @@
 /* Smartphones (portrait) ----------- */
 @media only screen 
 and (max-width : 480px) {
+   #main .home-banner {
+      padding:60px 40px;
+      background-size:cover;
+   }
+   #main .home-banner h1,
+   #main .home-banner p {
+      width:auto;
+   }
+   #main .new-datafile-wrapper {
+      width:100%;
+      box-sizing:border-box;
+   }
    #main .login_form {
       width:100%;
       padding:20px;
@@ -12,9 +24,16 @@ and (max-width : 480px) {
    #main .login_form table td * {
       width:100%;
    }
+   #header .menu {
+      padding:0;
+      width:100%;
+   }
    #header .menu li {
       width:100%;
       margin:0;
+   }
+   #header .menu li {
+      margin-bottom:10px;
    }
    #header .menu li a.button {
       width:100%;
@@ -30,12 +49,50 @@ and (max-width : 480px) {
    }
    table {
       width:100%!important;
-      table-layout:fixed;
    }
    #main .new_computation .datafile_formset {
       width:100%;
    }
+   #zooming .button {
+      width:inherit;
+   }
+   .wms-legend table {
+      width: 40px!important;
+   }
+   .mobileHide{
+      display:none;
+   } 
+   #main .computations,
+   #main .my-computations {
+      table-layout:fixed;
+   }
+   #main .my-computations th:last-child,
+   #main .my-computations td:nth-child(4) {
+      display:none;
+   }
+   #main .computations th:first-child,
+   #main .computations td:first-child {
+      width:5px;
+   }
+   #main .datafiles th:first-child,
+   #main .datafiles td:first-child {
+      width:20px;
+   }
+   #main .datafiles th:nth-child(2),
+   #main .datafiles td:nth-child(2) {
+      padding-left:0;
+   }
+   
+   #main .data_files table {
+      table-layout:fixed;
+   }
+   #main .data_files th:nth-child(2),
+   #main .data_files td:nth-child(2) {
+      width:100px;
+      overflow:hidden;
+   }
 }
+
 
 /* iPads (portrait and landscape) ----------- */
 @media only screen 
