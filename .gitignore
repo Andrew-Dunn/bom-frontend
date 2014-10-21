@@ -1,6 +1,10 @@
 /bom/settings.py
 python27/
 nohup.out
+datafiles
+dev/mount_nectar.sh
+dev/unmount_nectar.sh
+django.pid
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
