@@ -164,9 +164,22 @@ td {
  * HOMEPAGE 
  * ############################################################# */
 #main .home-banner {
-   background:#f0eeeb;
+   background:url(../images/home-banner.jpg);
    height:315px;
    margin-bottom:20px;
+   padding:80px 40px;
+   box-sizing:border-box;
+}
+#main .home-banner h1 {
+   margin:0;
+   font-size: 2.5em;
+   width: 300px;
+   line-height:30px;
+}
+#main .home-banner p {
+   color:#ffffff;
+   width:300px;
+   font-size:1.25em;
 }
 #main .home-module {
    background:#f0eeeb;
